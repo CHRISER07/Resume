@@ -1,0 +1,172 @@
+/* Main styles for AI Resume Screener */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    line-height: 1.6;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    font-weight: 600;
+}
+
+/* Form styles */
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
+
+/* Button styles */
+.btn {
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    transform: translateY(-2px);
+}
+
+/* Skills tags */
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-tag {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.matching-skill {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.missing-skill {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+/* Match score visualization */
+.progress-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: #f3f3f3;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.progress-circle-inner {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+#match-percentage {
+    font-size: 28px;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.match-score-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* About section */
+.tech-badge {
+    display: inline-block;
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+/* Animation for content switching */
+.content-section {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .progress-circle {
+        width: 120px;
+        height: 120px;
+    }
+
+    .progress-circle-inner {
+        width: 90px;
+        height: 90px;
+        top: 15px;
+        left: 15px;
+    }
+
+    #match-percentage {
+        font-size: 24px;
+    }
+}
