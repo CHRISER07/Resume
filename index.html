@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered resume screening system that matches candidates to job descriptions">
+    <title>AI Resume Screening System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-robot me-2" aria-hidden="true"></i>AI Resume Screener</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="nav-upload" aria-current="page">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="nav-match">Match</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="nav-jobs">Job Descriptions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="nav-about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+    </nav>
+    <div class="container mt-4">
+        <!-- Upload Resume Section -->
+        <div id="upload-section" class="content-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-file-upload me-2" aria-hidden="true"></i>Upload Resume</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="resume-upload-form" novalidate>
+                                <div class="mb-3">
+                                    <label for="resume-file" class="form-label">Select Resume File</label>
+                                    <input class="form-control" type="file" id="resume-file" name="resume" accept=".txt,.pdf,.docx" required aria-describedby="file-help-text">
+                                    <div id="file-help-text" class="form-text">Supported formats: .txt, .pdf, .docx</div>
+                                    <div class="invalid-feedback">Please select a valid resume file</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-upload me-1" aria-hidden="true"></i> Upload and Process
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-briefcase me-2" aria-hidden="true"></i>Add Job Description</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="job-description-form" novalidate>
+                                <div class="mb-3">
+                                    <label for="job-title" class="form-label">Job Title</label>
+                                    <input type="text" class="form-control" id="job-title" name="job-title" placeholder="e.g. Senior Python Developer" required>
+                                    <div class="invalid-feedback">Please enter a job title</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="job-description" class="form-label">Job Description</label>
+                                    <textarea class="form-control" id="job-description" name="job-description" rows="8" placeholder="Paste job description here..." required aria-describedby="job-desc-help"></textarea>
+                                    <div id="job-desc-help" class="form-text">Include responsibilities, requirements, and qualifications</div>
+                                    <div class="invalid-feedback">Please enter a job description</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1" aria-hidden="true"></i> Save and Process
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Display -->
+            <div class="row mt-4" id="processing-results" style="display: none;">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-check-circle me-2" aria-hidden="true"></i>Processing Results</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="result-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Match Section -->
+        <div id="match-section" class="content-section" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-exchange-alt me-2" aria-hidden="true"></i>Match Resume to Job</h5>
+                </div>
+                <div class="card-body">
+                    <form id="match-form" novalidate>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="select-resume" class="form-label">Select Resume</label>
+                                    <select class="form-select" id="select-resume" name="resume" required>
+                                        <option value="">Select a resume...</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a resume</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="select-job" class="form-label">Select Job Description</label>
+                                    <select class="form-select" id="select-job" name="job" required>
+                                        <option value="">Select a job...</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a job description</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1" aria-hidden="true"></i> Calculate Match
+                        </button>
+                    </form>
+
+                    <div id="match-results" class="mt-4" style="display: none;" aria-live="polite">
+                        <h4>Match Results</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="match-score-container text-center">
+                                    <div class="progress-circle" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-circle-inner">
+                                            <span id="match-percentage">0%</span>
+                                        </div>
+                                    </div>
+                                    <h5 class="mt-3">Match Score</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="skills-comparison">
+                                    <h5>Skills Analysis</h5>
+                                    <div class="card mb-2">
+                                        <div class="card-header bg-success text-white">
+                                            <i class="fas fa-check-circle me-1" aria-hidden="true"></i> Matching Skills
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="matching-skills" class="skill-tags"></div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-header bg-warning text-dark">
+                                            <i class="fas fa-exclamation-triangle me-1" aria-hidden="true"></i> Missing Skills
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="missing-skills" class="skill-tags"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jobs Section -->
+        <div id="jobs-section" class="content-section" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-briefcase me-2" aria-hidden="true"></i>Job Descriptions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <caption>List of saved job descriptions</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Job Title</th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobs-table-body">
+                                <!-- Jobs will be listed here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div id="about-section" class="content-section" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2" aria-hidden="true"></i>About AI Resume Screener</h5>
+                </div>
+                <div class="card-body">
+                    <h4>How It Works</h4>
+                    <p>The AI Resume Screener uses state-of-the-art natural language processing and machine learning techniques to analyze resumes and match them to job descriptions.</p>
+
+                    <h5>Key Features:</h5>
+                    <ul>
+                        <li><strong>Resume Processing:</strong> Cleans and preprocesses resume text to extract meaningful information</li>
+                        <li><strong>Skill Extraction:</strong> Automatically identifies technical and soft skills from resumes</li>
+                        <li><strong>BERT Embeddings:</strong> Utilizes BERT (Bidirectional Encoder Representations from Transformers) to create semantic representations of text</li>
+                        <li><strong>Job Matching:</strong> Calculates similarity between resumes and job descriptions</li>
+                        <li><strong>Skills Gap Analysis:</strong> Identifies matching skills and those missing from a candidate's profile</li>
+                    </ul>
+
+                    <h5>Technologies Used:</h5>
+                    <div class="tech-stack" aria-label="Technologies used in this application">
+                        <span class="tech-badge">Python</span>
+                        <span class="tech-badge">Flask</span>
+                        <span class="tech-badge">spaCy</span>
+                        <span class="tech-badge">NLTK</span>
+                        <span class="tech-badge">Sentence Transformers</span>
+                        <span class="tech-badge">BERT</span>
+                        <span class="tech-badge">Bootstrap</span>
+                        <span class="tech-badge">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-3 bg-dark text-white text-center">
+        <div class="container">
+            <p>© 2025 AI Resume Screener | Powered by BERT and NLP</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
